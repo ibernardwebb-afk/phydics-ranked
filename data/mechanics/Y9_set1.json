@@ -1,0 +1,31 @@
+{
+  "timers": { "readSeconds": 60, "solveSeconds": 600 },
+  "extract": {
+    "html": "A car of mass 1000 kg brakes from 24 m/s on a dry road. Braking force is approximately constant. A data logger records speed vs time and stopping distance. Ignore air resistance.",
+    "constants": ["g = 9.8 m s^-2"]
+  },
+  "questions": [
+    {
+      "type": "numeric",
+      "prompt": "Q1. If the average braking force is 5000 N, find the deceleration a. (Use F = m a.)",
+      "units": "m/s^2",
+      "answer": 5.0,
+      "tol": 0.1,
+      "hint": "a = F/m."
+    },
+    {
+      "type": "numeric",
+      "prompt": "Q2. From 24 m/s to rest under constant deceleration a=5.0 m/s^2, estimate stopping distance using v^2 = u^2 + 2 a s.",
+      "units": "m",
+      "answer": 57.6,
+      "tol": 0.1,
+      "hint": "Rearrange for s."
+    },
+    {
+      "type": "free",
+      "prompt": "Q3. In reality stopping distance is longer. Name one factor that increases it.",
+      "keywords": ["reaction", "thinking", "wet", "icy", "tyre", "brake", "drag"],
+      "hint": "Road & human factors."
+    }
+  ]
+}
