@@ -1,0 +1,31 @@
+{
+  "timers": { "readSeconds": 60, "solveSeconds": 600 },
+  "extract": {
+    "html": "A satellite is to be placed into a low Earth circular orbit at altitude <b>h = 400 km</b>. Assume Earth is spherical with radius <b>R = 6.371×10^6 m</b> and gravitational parameter <b>μ = GM = 3.986×10^14 m^3 s^-2</b>. Neglect atmosphere during orbit. During launch, a brief prograde impulse circularizes at altitude. The diagram (not to scale) shows forces and the velocity vector at orbital insertion.",
+    "constants": ["g0 = 9.81 m s^-2", "μ = 3.986e14 m^3 s^-2", "R = 6.371e6 m"]
+  },
+  "questions": [
+    {
+      "type": "free",
+      "prompt": "Q1. Why do astronauts experience weightlessness in orbit even though gravity is not zero? Provide a concise explanation.",
+      "keywords": ["free fall", "continuous falling", "normal force", "microgravity", "orbit"],
+      "hint": "Think about free-fall motion."
+    },
+    {
+      "type": "numeric",
+      "prompt": "Q2. Compute the circular orbital speed at altitude h = 400 km using v = sqrt(μ / (R + h)). Enter your answer in m/s.",
+      "units": "m/s",
+      "answer": 7672.598181843411,
+      "tol": 0.02,
+      "hint": "Use μ = 3.986e14, r = R + h."
+    },
+    {
+      "type": "numeric",
+      "prompt": "Q3. The specific orbital energy for a circular orbit is ε = -μ/(2r). Compute the change Δε between sea-level and the 400 km orbit (J/kg). Enter the magnitude.",
+      "units": "J/kg",
+      "answer": 4878102.81842041,
+      "tol": 0.05,
+      "hint": "Compute ε_final - ε_initial; report magnitude."
+    }
+  ]
+}
