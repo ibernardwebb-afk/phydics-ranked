@@ -1,1 +1,12 @@
-
+{
+  "timers": { "readSeconds": 60, "solveSeconds": 600 },
+  "extract": {
+    "html": "A long cylinder of radius R is uniformly charged with volume charge density ρ. Consider the electric field inside (r < R) and outside (r > R).",
+    "constants": ["Gauss's law: ∮E·dA = Q_enc/ε0"]
+  },
+  "questions": [
+    { "type": "free", "prompt": "Q1. Choose a Gaussian surface appropriate for calculating E for r < R.", "keywords": ["cylindrical","coaxial","gaussian cylinder"], "hint": "Match symmetry." },
+    { "type": "numeric", "prompt": "Q2. For r<R, E(r) = ρ r / (2 ε0). If ρ=2.0e-6 C/m^3, r=0.01 m, ε0=8.85e-12, compute E.", "units": "V/m", "answer": 1130045.197740113, "tol": 0.05, "hint": "Plug values carefully." },
+    { "type": "free", "prompt": "Q3. For r>R, how does E scale with r?", "keywords": ["1/r","inverse","falls off"], "hint": "Enclosed charge is constant." }
+  ]
+}
