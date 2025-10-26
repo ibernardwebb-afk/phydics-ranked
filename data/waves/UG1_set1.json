@@ -1,0 +1,12 @@
+{
+  "timers": { "readSeconds": 60, "solveSeconds": 600 },
+  "extract": {
+    "html": "Monochromatic light λ = 520 nm passes through a narrow single slit of width a = 20 μm. Fraunhofer diffraction pattern is observed on a distant screen.",
+    "constants": ["λ = 520 nm", "a = 20 μm"]
+  },
+  "questions": [
+    { "type": "free", "prompt": "Q1. State the condition for the first minimum in single-slit Fraunhofer diffraction.", "keywords": ["a sin θ = λ","minimum"], "hint": "Slit width times sinθ…" },
+    { "type": "numeric", "prompt": "Q2. For small angles, estimate θ for first minimum (radians). Use a·θ ≈ λ.", "units": "", "answer": 0.026, "tol": 0.1, "hint": "λ/a (convert units!)." },
+    { "type": "free", "prompt": "Q3. If the slit is made narrower, what happens to central maximum width?", "keywords": ["increases","broader","wider"], "hint": "Inverse relationship." }
+  ]
+}
