@@ -1,0 +1,5 @@
+{
+  "timers": { "readSeconds": 45, "solveSeconds": 480 },
+  "extract": {
+    "html": "A loudspeaker produces sound in air of frequency 440 Hz. The air temperature is 20 °C so the speed of sound is about 343 m/s.",
+    "
