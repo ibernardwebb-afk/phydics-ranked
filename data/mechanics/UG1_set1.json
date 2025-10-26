@@ -1,31 +1,12 @@
 {
   "timers": { "readSeconds": 60, "solveSeconds": 600 },
   "extract": {
-    "html": "A car of mass 1000 kg brakes from 24 m/s on a dry road. Braking force is approximately constant. A data logger records speed vs time and stopping distance. Ignore air resistance.",
-    "constants": ["g = 9.8 m s^-2"]
+    "html": "A satellite is to be placed into a circular LEO at altitude h = 400 km. Assume R = 6.371×10^6 m and μ = 3.986×10^14 m^3 s^-2. Neglect drag during orbit. A brief prograde impulse circularizes at altitude.",
+    "constants": ["μ = 3.986e14 m^3 s^-2", "R = 6.371e6 m"]
   },
   "questions": [
-    {
-      "type": "numeric",
-      "prompt": "Q1. If the average braking force is 5000 N, find the deceleration a. (Use F = m a.)",
-      "units": "m/s^2",
-      "answer": 5.0,
-      "tol": 0.1,
-      "hint": "a = F/m."
-    },
-    {
-      "type": "numeric",
-      "prompt": "Q2. From 24 m/s to rest under constant deceleration a=5.0 m/s^2, estimate stopping distance using v^2 = u^2 + 2 a s.",
-      "units": "m",
-      "answer": 57.6,
-      "tol": 0.1,
-      "hint": "Rearrange for s."
-    },
-    {
-      "type": "free",
-      "prompt": "Q3. In reality stopping distance is longer. Name one factor that increases it.",
-      "keywords": ["reaction", "thinking", "wet", "icy", "tyre", "brake", "drag"],
-      "hint": "Road & human factors."
-    }
+    { "type": "free", "prompt": "Q1. Explain why astronauts in orbit experience weightlessness even though gravity is not zero.", "keywords": ["free fall","normal force","microgravity","continuous falling"], "hint": "Consider support force." },
+    { "type": "numeric", "prompt": "Q2. Compute circular orbital speed v = sqrt(μ/(R+h)) for h = 400 km. (m/s)", "units": "m/s", "answer": 7672.598181843411, "tol": 0.02, "hint": "Use μ and r=R+h." },
+    { "type": "numeric", "prompt": "Q3. Specific orbital energy change |Δε| from sea level to 400 km (J/kg), using ε = -μ/(2r).", "units": "J/kg", "answer": 4878102.81842041, "tol": 0.05, "hint": "ε_final - ε_initial; magnitude." }
   ]
 }
