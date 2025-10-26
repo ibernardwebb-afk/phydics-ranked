@@ -1,4 +1,4 @@
-// game.js — reading → questions → scoring
+// game.js — reading → questions → scoring (subject+year aware)
 
 let DATA = null;
 let phase = 'reading';
@@ -17,9 +17,28 @@ const nextBtn = document.getElementById('nextBtn');
 const hintBtn = document.getElementById('hintBtn');
 const submitBtn = document.getElementById('submitBtn');
 
+function getParams(){
+  const p = new URLSearchParams(location.search);
+  const sub = p.get('sub') || localStorage.getItem('pr_selSub') || 'Mechanics';
+  const lvl = p.get('lvl') || localStorage.getItem('pr_selLvl') || 'Y10';
+  return {sub,lvl};
+}
+function dataPath(sub,lvl){
+  // e.g., data/mechanics/Y10_set1.json
+  const s = sub.toLowerCase();
+  return `../data/${s}/${lvl}_set1.json`;
+}
+
 async function boot(){
-  const res = await fetch('../data/mech_uni_01.json');
-  DATA = await res.json();
+  const {sub,lvl} = getParams();
+  try{
+    const res = await fetch(dataPath(sub,lvl));
+    DATA = await res.json();
+  }catch(e){
+    // fallback to old UG1 mechanics if someone deep-linked
+    const res = await fetch('../data/mech_uni_01.json');
+    DATA = await res.json();
+  }
   remaining = DATA.timers.readSeconds;
   renderReading();
   startTimer();
@@ -33,13 +52,10 @@ function startTimer(){
     tbar.style.width = Math.max(0, remaining/total)*100 + '%';
     if (remaining <= 0){
       clearInterval(timer);
-      if (phase === 'reading'){
-        startQuestions();
-      }
+      if (phase === 'reading'){ startQuestions(); }
     }
   }, 1000);
 }
-
 function renderReading(){
   phase = 'reading';
   phaseEl.textContent = 'Reading';
@@ -48,20 +64,19 @@ function renderReading(){
     <div class="paper">
       <h2 class="calli">Extract</h2>
       <p>${DATA.extract.html}</p>
-      <div class="mono">${DATA.extract.constants.join(' • ')}</div>
+      ${DATA.extract.image ? `<img src="${DATA.extract.image}" alt="" style="max-width:100%;border-radius:12px;border:1px solid #1b1f33;margin-top:8px">` : ''}
+      <div class="mono">${(DATA.extract.constants||[]).join(' • ')}</div>
     </div>`;
 }
-
 function startQuestions(){
   phase = 'questions';
   phaseEl.textContent = 'Questions';
   remaining = DATA.timers.solveSeconds;
   startTimer();
-  idx = 0;
+  idx = 0; totalScore = 0;
   actions.style.display = 'block';
   renderQuestion();
 }
-
 function renderQuestion(){
   const q = DATA.questions[idx];
   view.innerHTML = `
@@ -77,24 +92,20 @@ function renderQuestion(){
       ${q.hint? `<div class="mono" style="opacity:.8;margin-top:8px">Hint available</div>`:''}
     </div>`;
 }
-
 function scoreCurrent(){
   const q = DATA.questions[idx];
   let s = 0;
-
-  if (q.type === 'numeric'){
+  if (q.type==='numeric'){
     const v = parseFloat(document.getElementById('ans').value);
     if (!isNaN(v)){
-      const rel = Math.abs(v - q.answer)/Math.abs(q.answer);
+      const rel = Math.abs(v - q.answer)/Math.max(1e-9, Math.abs(q.answer));
       s = (rel <= q.tol) ? 1 : (rel <= q.tol*2 ? 0.5 : 0);
     }
   } else {
-    const text = (document.getElementById('work').value || '').toLowerCase();
-    s = q.keywords.some(k=>text.includes(k.toLowerCase())) ? 1 : 0.5;
+    const text = (document.getElementById('work').value||'').toLowerCase();
+    s = q.keywords && q.keywords.some(k=>text.includes(k.toLowerCase())) ? 1 : 0.5;
   }
-
-  totalScore += s;
-  return s;
+  totalScore += s; return s;
 }
 
 prevBtn.addEventListener('click', ()=>{ if (idx>0){ idx--; renderQuestion(); }});
@@ -102,9 +113,7 @@ nextBtn.addEventListener('click', ()=>{ if (idx<DATA.questions.length-1){ idx++;
 hintBtn.addEventListener('click', ()=> alert(DATA.questions[idx].hint || 'No hint.'));
 submitBtn.addEventListener('click', ()=>{ 
   scoreCurrent();
-  if (idx < DATA.questions.length-1) idx++;
-  else finishMatch();
-  renderQuestion();
+  if (idx < DATA.questions.length-1){ idx++; renderQuestion(); } else finishMatch();
 });
 
 function finishMatch(){
@@ -113,14 +122,16 @@ function finishMatch(){
   clearInterval(timer);
 
   const scoreFrac = totalScore / DATA.questions.length;
-  const newElo = PlayerRank.update('Mechanics', scoreFrac);
+  const {sub,lvl} = getParams();
+  const key = `${sub}_${lvl}`;
+  const newElo = PlayerRank.update(key, scoreFrac);
 
   result.style.display = 'block';
   result.innerHTML = `
     <h2 class="calli">Match Analysis</h2>
     <div class="row" style="flex-wrap:wrap;gap:14px">
       <span class="pill">Score: ${(scoreFrac*100).toFixed(0)}%</span>
-      <span class="pill">New Mechanics Rank: <b>${rankFromElo(newElo)}</b></span>
+      <span class="pill">New Rank (${sub} — ${lvl}): <b>${rankFromElo(newElo)}</b></span>
     </div>
     <div style="margin-top:10px;opacity:.9">
       <a class="btn" href="../index.html">Return Home</a>
