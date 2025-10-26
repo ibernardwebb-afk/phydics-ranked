@@ -5,15 +5,25 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>PHYDICS RANKED</title>
 <style>
-  :root{--bg:#0e0f14;--paper:#111217;--ink:#f1f3ff;--muted:#bfc5ff;--accent:#8fa8ff}
+  :root{--bg:#0e0f14;--paper:#111217;--ink:#f1f3ff;--muted:#bfc5ff;--accent:#8fa8ff;--edge:#1b1d2a}
   *{box-sizing:border-box} html,body{margin:0;background:linear-gradient(180deg,#0a0b10,#0e0f14);color:var(--ink);font-family:Georgia,serif}
-  .wrap{max-width:920px;margin:auto;padding:24px}
+  .wrap{max-width:1000px;margin:auto;padding:24px}
   header{display:flex;align-items:center;justify-content:space-between;gap:16px}
-  .card{background:var(--paper);border:1px solid #1b1d2a;border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.4);padding:20px;margin:18px 0}
-  .btn{display:inline-block;padding:14px 18px;border-radius:14px;border:1px solid #29304e;background:#15182a;color:var(--ink);text-decoration:none;font-weight:700}
-  .btn.primary{background:var(--accent);color:#0b0c12;border-color:#9cb0ff}
   .pill{padding:6px 10px;border-radius:999px;background:#171a2b;border:1px solid #242a42;color:#bfc5ff;font-size:12px}
+  .card{background:#111217;border:1px solid var(--edge);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.4);padding:18px;margin:16px 0}
+  .grid{display:grid;gap:12px}
+  .grid3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .btn{display:inline-block;padding:12px 16px;border-radius:12px;border:1px solid #29304e;background:#15182a;color:var(--ink);text-decoration:none;font-weight:700;cursor:pointer}
+  .btn.primary{background:var(--accent);color:#0b0c12;border-color:#9cb0ff}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   .calli{font-family:'Snell Roundhand','Brush Script MT',cursive}
+  /* Onboarding full-screen modal */
+  .modal{position:fixed;inset:0;background:rgba(6,8,14,.92);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+  .modal .panel{max-width:720px;width:100%;background:#0f1221;border:1px solid #242a42;border-radius:16px;padding:18px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{padding:10px 14px;border:1px solid #29304e;border-radius:999px;background:#15182a;cursor:pointer}
+  .chip.active{background:var(--accent);color:#0b0c12;border-color:#9cb0ff}
+  input[type=text]{width:100%;padding:12px;border-radius:12px;border:1px solid #2a3154;background:#0f1226;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -23,18 +33,111 @@
       <h1 class="calli" style="margin:0">PHYDICS RANKED</h1>
       <div>Physics • Esports • Dark Academia</div>
     </div>
-    <div>
-      <span class="pill">User: <b>B Vanderbloemen</b></span>
-      <span class="pill">Title: <i>Undergrad</i></span>
-      <span class="pill">Rank: Silver IV — Mechanics</span>
+    <div class="row">
+      <span class="pill">User: <b id="u_name">B Vanderbloemen</b></span>
+      <span class="pill">Title: <i id="u_title">Undergrad</i></span>
     </div>
   </header>
 
+  <!-- SUBJECT PICKER -->
   <div class="card">
-    <h2 style="margin-top:0">Ranked Match — Mechanics (University)</h2>
-    <p class="calli">Extract-based • Timed • Competitive</p>
-    <a class="btn primary" href="./pages/match.html">Enter Ranked Solo</a>
+    <h2 style="margin:0 0 8px">Choose Subject</h2>
+    <div class="grid grid3" id="subjects">
+      <!-- buttons injected -->
+    </div>
+  </div>
+
+  <!-- LEVEL PICKER -->
+  <div class="card">
+    <h2 style="margin:0 0 8px">Choose Ladder (Year Group)</h2>
+    <div class="chips" id="levels">
+      <!-- chips injected -->
+    </div>
+    <div style="height:10px"></div>
+    <button class="btn primary" id="playBtn">Enter Ranked Solo</button>
+    <div class="row" style="margin-top:10px">
+      <span class="pill">Selected: <b id="selLabel">Mechanics — Y10</b></span>
+      <span class="pill">Rank: <b id="selRank">Silver IV</b></span>
+    </div>
+  </div>
+
+  <div class="card"><b>Tip:</b> After it loads, Share → Add to Home Screen to install as an app.</div>
+</div>
+
+<!-- Onboarding modal -->
+<div class="modal" id="onboard">
+  <div class="panel">
+    <h2 class="calli" style="margin:0 0 8px">Welcome to PHYDICS RANKED</h2>
+    <p>Select your current year group.</p>
+    <div class="chips" id="ob_years"></div>
+    <div style="height:12px"></div>
+    <p>Your academic title (displayed under your name):</p>
+    <input type="text" id="ob_title" placeholder="Undergrad"/>
+    <div class="row" style="margin-top:12px;justify-content:flex-end">
+      <button class="btn" id="ob_cancel">Skip</button>
+      <button class="btn primary" id="ob_save">Save & Continue</button>
+    </div>
   </div>
 </div>
+
+<script src="./scripts/rank.js"></script>
+<script src="./scripts/onboarding.js"></script>
+<script>
+  // ----- Simple home UI wiring -----
+  const subjects = [
+    {id:'Mechanics', icon:'⚙', unlocked:true},
+    {id:'Waves', icon:'📡', unlocked:true},         // Waves enabled per your request
+    {id:'EM', icon:'⚡', unlocked:false},
+    {id:'Thermal', icon:'🔥', unlocked:false},
+    {id:'Modern', icon:'🧪', unlocked:false},
+    {id:'Relativity', icon:'🚀', unlocked:false},
+  ];
+  const levelsAll = ['Y9','Y10','Y11','Y12','Y13','UG1','UG2','UG3'];
+
+  // Defaults
+  const S = PlayerRank.state();
+  let selSub = localStorage.getItem('pr_selSub') || 'Mechanics';
+  let selLvl = localStorage.getItem('pr_selLvl') || 'Y10'; // Default you chose: Mechanics Y10
+
+  function renderSubjects(){
+    const wrap = document.getElementById('subjects'); wrap.innerHTML='';
+    subjects.forEach(s=>{
+      const a = document.createElement('button');
+      a.className='btn'+(selSub===s.id?' primary':'');
+      a.textContent = `${s.icon} ${s.id}` + (s.unlocked?'':' 🔒');
+      a.disabled = !s.unlocked;
+      a.onclick = ()=>{ selSub=s.id; localStorage.setItem('pr_selSub', selSub); renderSubjects(); renderLevels(); updateSelected(); };
+      wrap.appendChild(a);
+    });
+  }
+  function renderLevels(){
+    const wrap = document.getElementById('levels'); wrap.innerHTML='';
+    const unlockedMax = PlayerRank.unlockedMaxLevel(); // based on onboarding year
+    levelsAll.forEach(L=>{
+      const b = document.createElement('div');
+      const isUnlocked = levelsAll.indexOf(L) <= levelsAll.indexOf(unlockedMax);
+      b.className='chip'+(selLvl===L?' active':'');
+      b.textContent = isUnlocked? L : `${L} 🔒`;
+      b.style.opacity = isUnlocked? '1':'0.5';
+      b.onclick = ()=>{ if(isUnlocked){ selLvl=L; localStorage.setItem('pr_selLvl', selLvl); updateSelected(); renderLevels(); } };
+      wrap.appendChild(b);
+    });
+  }
+  function updateSelected(){
+    const key = `${selSub}_${selLvl}`;
+    document.getElementById('selLabel').textContent = `${selSub} — ${selLvl}`;
+    document.getElementById('selRank').textContent = rankFromElo(PlayerRank.getElo(key));
+  }
+  document.getElementById('playBtn').onclick = ()=>{
+    // route to match with query params
+    location.href = `./pages/match.html?sub=${encodeURIComponent(selSub)}&lvl=${encodeURIComponent(selLvl)}`;
+  };
+
+  // header identity from onboarding
+  document.getElementById('u_title').textContent = localStorage.getItem('pr_title') || 'Undergrad';
+
+  renderSubjects(); renderLevels(); updateSelected();
+  Onboarding.maybeOpen(); // will open modal on first launch
+</script>
 </body>
 </html>
