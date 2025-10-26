@@ -1,0 +1,12 @@
+{
+  "timers": { "readSeconds": 60, "solveSeconds": 600 },
+  "extract": {
+    "html": "Consider one mole of ideal gas undergoing a reversible isothermal expansion at temperature T from volume V1 to V2.",
+    "constants": ["Ideal gas", "Reversible", "Isothermal"]
+  },
+  "questions": [
+    { "type": "free", "prompt": "Q1. Write the expression for work done by the gas in reversible isothermal expansion.", "keywords": ["W = nRT ln(V2/V1)","nRT ln"], "hint": "Integral of p dV with p = nRT/V." },
+    { "type": "numeric", "prompt": "Q2. For n=1 mol, T=300 K, V1=0.010 m³, V2=0.020 m³, compute W (J). Use R=8.314.", "units": "J", "answer": 1727.0, "tol": 0.05, "hint": "nRT ln(2)." },
+    { "type": "free", "prompt": "Q3. During isothermal expansion of an ideal gas, how do ΔU, Q, and W relate?", "keywords": ["ΔU=0","Q=W","internal energy constant"], "hint": "U depends on T only." }
+  ]
+}
