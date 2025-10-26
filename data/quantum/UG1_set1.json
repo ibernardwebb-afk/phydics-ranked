@@ -1,1 +1,12 @@
-
+{
+  "timers": { "readSeconds": 60, "solveSeconds": 600 },
+  "extract": {
+    "html": "A particle of mass m is in a 1-D infinite square well of width L (0<x<L). Stationary states have energies En = n²π²ħ²/(2mL²).",
+    "constants": ["E_n = n²π²ħ²/(2mL²)"]
+  },
+  "questions": [
+    { "type": "free", "prompt": "Q1. State the boundary conditions for ψ(x) in an infinite square well.", "keywords": ["ψ(0)=0","ψ(L)=0","wavefunction zero at walls"], "hint": "Infinite walls." },
+    { "type": "numeric", "prompt": "Q2. For an electron (m=9.11e-31 kg) in L=1.0e-9 m, compute E1 in eV (ħ=1.055e-34 J·s, 1 eV=1.602e-19 J).", "units": "eV", "answer": 0.376, "tol": 0.1, "hint": "Compute E1 then convert J→eV." },
+    { "type": "free", "prompt": "Q3. If n increases, how do energy spacings change?", "keywords": ["increase","get larger","grow"], "hint": "E ∝ n²." }
+  ]
+}
